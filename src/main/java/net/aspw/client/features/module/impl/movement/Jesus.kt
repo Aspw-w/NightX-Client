@@ -1,6 +1,10 @@
 package net.aspw.client.features.module.impl.movement
 
-import net.aspw.client.event.*
+import net.aspw.client.event.BlockBBEvent
+import net.aspw.client.event.EventTarget
+import net.aspw.client.event.MoveEvent
+import net.aspw.client.event.PacketEvent
+import net.aspw.client.event.UpdateEvent
 import net.aspw.client.features.module.Module
 import net.aspw.client.features.module.ModuleCategory
 import net.aspw.client.features.module.ModuleInfo
@@ -16,7 +20,7 @@ import net.minecraft.init.Blocks
 import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
-import java.util.*
+import java.util.Locale
 
 @ModuleInfo(name = "Jesus", spacedName = "Jesus", category = ModuleCategory.MOVEMENT)
 class Jesus : Module() {
@@ -35,7 +39,9 @@ class Jesus : Module() {
             "MatrixFast",
             "MatrixDolphin",
             "Dolphin",
-            "Swim"
+            "Swim",
+            "Vulcan",
+            "Verus"
         ),
         "NCP"
     )
@@ -80,6 +86,19 @@ class Jesus : Module() {
             "matrixfast" -> if (mc.thePlayer.isInWater) {
                 mc.thePlayer.motionY = 0.0
                 MovementUtils.strafe(0.6f)
+            }
+
+            "verus" -> if (mc.thePlayer.isInWater) {
+                mc.thePlayer.motionY = 0.0
+                MovementUtils.strafe(0.32f)
+            }
+
+            "vulcan" -> if (mc.thePlayer.isInWater) {
+                mc.thePlayer.motionY = 0.015 *
+                        if (!MovementUtils.isMoving()) 0
+                        else if (mc.thePlayer.ticksExisted % 2 == 0) 1
+                        else -1
+                MovementUtils.strafe(0.145f)
             }
 
             "matrixdolphin" -> if (mc.thePlayer.isInWater) {

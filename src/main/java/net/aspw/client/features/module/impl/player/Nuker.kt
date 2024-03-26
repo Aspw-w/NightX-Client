@@ -83,7 +83,7 @@ class Nuker : Module() {
             // Default nuker
             val validBlocks = searchBlocks(radiusValue.get().roundToInt() + 1)
                 .filter { (pos, block) ->
-                    if (getCenterDistance(pos) <= radiusValue.get() && validBlock(block)) {
+                    if (getCenterDistance(pos) <= radiusValue.get() && validBlock(block!!)) {
                         if (layerValue.get() && pos.y < thePlayer.posY) { // Layer: Break all blocks above you
                             return@filter false
                         }
@@ -119,7 +119,7 @@ class Nuker : Module() {
                     }
 
                     "Hardness" -> validBlocks.maxByOrNull { (pos, block) ->
-                        val hardness = block.getPlayerRelativeBlockHardness(thePlayer, mc.theWorld!!, pos).toDouble()
+                        val hardness = block!!.getPlayerRelativeBlockHardness(thePlayer, mc.theWorld!!, pos).toDouble()
 
                         val safePos = BlockPos(thePlayer.posX, thePlayer.posY - 1, thePlayer.posZ)
                         if (pos.x == safePos.x && safePos.y <= pos.y && pos.z == safePos.z)
@@ -162,7 +162,7 @@ class Nuker : Module() {
                     )
 
                     // End block break if able to break instant
-                    if (block.getPlayerRelativeBlockHardness(thePlayer, mc.theWorld!!, blockPos) >= 1F) {
+                    if (block!!.getPlayerRelativeBlockHardness(thePlayer, mc.theWorld!!, blockPos) >= 1F) {
                         currentDamage = 0F
                         mc.playerController.onPlayerDestroyBlock(blockPos, EnumFacing.DOWN)
                         blockHitDelay = hitDelayValue.get()
@@ -173,7 +173,7 @@ class Nuker : Module() {
                 }
 
                 // Break block
-                currentDamage += block.getPlayerRelativeBlockHardness(thePlayer, mc.theWorld!!, blockPos)
+                currentDamage += block!!.getPlayerRelativeBlockHardness(thePlayer, mc.theWorld!!, blockPos)
                 mc.theWorld!!.sendBlockBreakProgress(thePlayer.entityId, blockPos, (currentDamage * 10F).toInt() - 1)
 
                 // End of breaking block
@@ -201,7 +201,7 @@ class Nuker : Module() {
             // Search for new blocks to break
             searchBlocks(radiusValue.get().roundToInt() + 1)
                 .filter { (pos, block) ->
-                    if (getCenterDistance(pos) <= radiusValue.get() && validBlock(block)) {
+                    if (getCenterDistance(pos) <= radiusValue.get() && validBlock(block!!)) {
                         if (layerValue.get() && pos.y < thePlayer.posY) { // Layer: Break all blocks above you
                             return@filter false
                         }

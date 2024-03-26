@@ -2,6 +2,12 @@ package net.aspw.client.utils.block
 
 import net.aspw.client.utils.MinecraftInstance
 import net.minecraft.block.Block
+import net.minecraft.block.BlockAir
+import net.minecraft.block.BlockButton
+import net.minecraft.block.BlockLever
+import net.minecraft.block.BlockPressurePlate
+import net.minecraft.block.BlockSign
+import net.minecraft.block.BlockWeb
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.util.AxisAlignedBB
@@ -10,7 +16,24 @@ import net.minecraft.util.MathHelper
 import net.minecraft.util.Vec3
 import kotlin.math.floor
 
+
 object BlockUtils : MinecraftInstance() {
+
+    /**
+     * Get player is in block
+     */
+    @JvmStatic
+    fun isInsideBlock(): Boolean {
+        return isInsideBlock(mc.thePlayer.entityBoundingBox)
+    }
+
+    /**
+     * Get aABB is in block
+     */
+    @JvmStatic
+    fun isInsideBlock(aABB: AxisAlignedBB): Boolean {
+        return collideBlockIntersects(aABB) { block -> !(block is BlockAir || block is BlockWeb || block is BlockSign || block is BlockButton || block is BlockPressurePlate || block is BlockLever || !block!!.isCollidable) }
+    }
 
     /**
      * Get block from [blockPos]
@@ -70,24 +93,30 @@ object BlockUtils : MinecraftInstance() {
      * Search blocks around the player in a specific [radius]
      */
     @JvmStatic
-    fun searchBlocks(radius: Int): Map<BlockPos, Block> {
-        val blocks = mutableMapOf<BlockPos, Block>()
-
-        for (x in radius downTo -radius + 1) {
-            for (y in radius downTo -radius + 1) {
-                for (z in radius downTo -radius + 1) {
+    fun searchBlocks(radius: Int): Map<BlockPos, Block?> {
+        val blocks: MutableMap<BlockPos, Block?> = HashMap()
+        for (x in radius downTo -radius) {
+            for (y in radius downTo -radius) {
+                for (z in radius downTo -radius) {
                     val blockPos = BlockPos(
-                        mc.thePlayer.posX.toInt() + x, mc.thePlayer.posY.toInt() + y,
+                        mc.thePlayer.posX.toInt() + x,
+                        mc.thePlayer.posY.toInt() + y,
                         mc.thePlayer.posZ.toInt() + z
                     )
-                    val block = getBlock(blockPos) ?: continue
-
-                    blocks[blockPos] = block
+                    if (getCenterDistance(blockPos) <= radius) blocks[blockPos] = getBlock(blockPos)
                 }
             }
         }
 
-        return blocks
+        val sortedBlocks: MutableMap<BlockPos, Block?> = LinkedHashMap()
+        blocks.entries.stream().sorted(
+            Comparator.comparingDouble<Map.Entry<BlockPos, Block?>> { obj: Map.Entry<BlockPos, Block?> ->
+                getCenterDistance(obj.key)
+            }
+        ).forEach { entry: Map.Entry<BlockPos, Block?> ->
+            sortedBlocks[entry.key] = entry.value
+        }
+        return sortedBlocks
     }
 
     /**
@@ -114,23 +143,11 @@ object BlockUtils : MinecraftInstance() {
      */
     @JvmStatic
     fun collideBlockIntersects(axisAlignedBB: AxisAlignedBB, collide: (Block?) -> Boolean): Boolean {
-        for (x in MathHelper.floor_double(mc.thePlayer.entityBoundingBox.minX) until
-                MathHelper.floor_double(mc.thePlayer.entityBoundingBox.maxX) + 1) {
-            for (z in MathHelper.floor_double(mc.thePlayer.entityBoundingBox.minZ) until
-                    MathHelper.floor_double(mc.thePlayer.entityBoundingBox.maxZ) + 1) {
-                val blockPos = BlockPos(x.toDouble(), axisAlignedBB.minY, z.toDouble())
-                val block = getBlock(blockPos)
-
-                if (collide(block)) {
-                    val boundingBox = block?.getCollisionBoundingBox(mc.theWorld, blockPos, getState(blockPos))
-                        ?: continue
-
-                    if (mc.thePlayer.entityBoundingBox.intersectsWith(boundingBox))
-                        return true
-                }
-            }
+        return mc.theWorld.getCollisionBoxes(axisAlignedBB).stream().anyMatch { cBB: AxisAlignedBB ->
+            collide(
+                getBlock(BlockPos(cBB.minX, cBB.minY, cBB.minZ))
+            )
         }
-        return false
     }
 
     @JvmStatic

@@ -1,6 +1,12 @@
 package net.aspw.client.features.module.impl.player;
 
-import net.aspw.client.event.*;
+import net.aspw.client.event.BlockBBEvent;
+import net.aspw.client.event.EventTarget;
+import net.aspw.client.event.JumpEvent;
+import net.aspw.client.event.MoveEvent;
+import net.aspw.client.event.PacketEvent;
+import net.aspw.client.event.PushOutEvent;
+import net.aspw.client.event.UpdateEvent;
 import net.aspw.client.features.module.Module;
 import net.aspw.client.features.module.ModuleCategory;
 import net.aspw.client.features.module.ModuleInfo;
@@ -50,22 +56,6 @@ public class Phase extends Module {
     private double yaw;
     private double value;
 
-    @Override
-    public void onEnable() {
-        stage = 0;
-        if (modeValue.get().equalsIgnoreCase("aacv4"))
-            mc.timer.timerSpeed = 0.1F;
-    }
-
-    @Override
-    public void onDisable() {
-        if (modeValue.get().equalsIgnoreCase("aacv4"))
-            mc.timer.timerSpeed = 1F;
-        shouldContinue = false;
-        clipState = 0;
-        value = 0;
-    }
-
     /**
      * On update.
      *
@@ -108,9 +98,7 @@ public class Phase extends Module {
             return;
         }
 
-        final boolean isInsideBlock = BlockUtils.collideBlockIntersects(mc.thePlayer.getEntityBoundingBox(), block -> !(block instanceof BlockAir));
-
-        if (isInsideBlock && !modeValue.get().equalsIgnoreCase("Packetless") && !modeValue.get().equalsIgnoreCase("SmartVClip")) {
+        if (BlockUtils.isInsideBlock() && !modeValue.get().equalsIgnoreCase("Packetless") && !modeValue.get().equalsIgnoreCase("SmartVClip")) {
             mc.thePlayer.noClip = true;
             mc.thePlayer.motionY = 0D;
             mc.thePlayer.onGround = true;
@@ -120,7 +108,7 @@ public class Phase extends Module {
 
         switch (modeValue.get().toLowerCase()) {
             case "vanilla": {
-                if (!mc.thePlayer.onGround || !tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!isInsideBlock || mc.thePlayer.isSneaking()))
+                if (!mc.thePlayer.onGround || !tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!BlockUtils.isInsideBlock() || mc.thePlayer.isSneaking()))
                     break;
 
                 netHandlerPlayClient.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
@@ -137,7 +125,7 @@ public class Phase extends Module {
                 break;
             }
             case "skip": {
-                if (!mc.thePlayer.onGround || !tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!isInsideBlock || mc.thePlayer.isSneaking()))
+                if (!mc.thePlayer.onGround || !tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!BlockUtils.isInsideBlock() || mc.thePlayer.isSneaking()))
                     break;
 
                 final double direction = MovementUtils.getDirection();
@@ -155,7 +143,7 @@ public class Phase extends Module {
                 break;
             }
             case "spartan": {
-                if (!mc.thePlayer.onGround || !tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!isInsideBlock || mc.thePlayer.isSneaking()))
+                if (!mc.thePlayer.onGround || !tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!BlockUtils.isInsideBlock() || mc.thePlayer.isSneaking()))
                     break;
 
                 netHandlerPlayClient.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
@@ -172,7 +160,7 @@ public class Phase extends Module {
                 break;
             }
             case "clip": {
-                if (!tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!isInsideBlock || mc.thePlayer.isSneaking()))
+                if (!tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!BlockUtils.isInsideBlock() || mc.thePlayer.isSneaking()))
                     break;
 
                 final double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
@@ -192,7 +180,7 @@ public class Phase extends Module {
                 break;
             }
             case "aac3.5.0": {
-                if (!tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!isInsideBlock || mc.thePlayer.isSneaking()))
+                if (!tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || !(!BlockUtils.isInsideBlock() || mc.thePlayer.isSneaking()))
                     break;
 
                 final double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
@@ -206,7 +194,7 @@ public class Phase extends Module {
                 break;
             }
             case "vulcan": {
-                if (!tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || isInsideBlock)
+                if (!tickTimer.hasTimePassed(2) || !mc.thePlayer.isCollidedHorizontally || BlockUtils.isInsideBlock())
                     break;
 
                 final double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
@@ -221,7 +209,7 @@ public class Phase extends Module {
                 break;
             }
             case "smartvclip": {
-                boolean cageCollision = (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer).up(3)).getBlock() != Blocks.air
+                final boolean cageCollision = (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer).up(3)).getBlock() != Blocks.air
                         && mc.theWorld.getBlockState(new BlockPos(mc.thePlayer).down()).getBlock() != Blocks.air);
                 noRot = (mc.thePlayer.ticksExisted >= 0 && mc.thePlayer.ticksExisted <= 40 && cageCollision);
                 if (mc.thePlayer.ticksExisted >= 20 && mc.thePlayer.ticksExisted < 40 && cageCollision) {
@@ -320,7 +308,7 @@ public class Phase extends Module {
             switch (clipState) {
                 case 1:
                     double i = 0;
-                    double moveYaw = MovementUtils.getDirection();
+                    final double moveYaw = MovementUtils.getDirection();
                     while ((i += 0.025) <= 2) {
                         if (mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(-(Math.sin(moveYaw) * i), 0, (Math.cos(moveYaw) * i)).expand(0, 0, 0)).isEmpty() && (mc.thePlayer.movementInput.moveForward != 0 || mc.thePlayer.movementInput.moveStrafe != 0)) {
                             if (i <= 0.06) {
@@ -367,7 +355,7 @@ public class Phase extends Module {
      * @param event the event
      */
     @EventTarget
-    public void onPushOut(PushOutEvent event) {
+    public void onPushOut(final PushOutEvent event) {
         event.cancelEvent();
     }
 
@@ -377,12 +365,28 @@ public class Phase extends Module {
      * @param event the event
      */
     @EventTarget
-    public void onJump(JumpEvent event) {
+    public void onJump(final JumpEvent event) {
         if (modeValue.get().equalsIgnoreCase("SmartVClip") && noRot) event.cancelEvent();
     }
 
     @Override
     public String getTag() {
         return modeValue.get();
+    }
+
+    @Override
+    public void onEnable() {
+        stage = 0;
+        if (modeValue.get().equalsIgnoreCase("aacv4"))
+            mc.timer.timerSpeed = 0.1F;
+    }
+
+    @Override
+    public void onDisable() {
+        if (modeValue.get().equalsIgnoreCase("aacv4"))
+            mc.timer.timerSpeed = 1F;
+        shouldContinue = false;
+        clipState = 0;
+        value = 0;
     }
 }
