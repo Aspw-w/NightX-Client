@@ -42,10 +42,10 @@ object UserUtils {
 
     fun getUsername(uuid: String): String? {
         val client = HttpClients.createDefault()
-        val request = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/${uuid}/names")
+        val request = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/${uuid}")
         val response = client.execute(request)
 
-        if (response.statusLine.statusCode != 200) {
+        if (response == null || response.statusLine.statusCode != 200) {
             return null
         }
 

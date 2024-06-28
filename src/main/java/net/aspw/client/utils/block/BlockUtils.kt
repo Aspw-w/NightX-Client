@@ -1,5 +1,6 @@
 package net.aspw.client.utils.block
 
+import kotlin.math.floor
 import net.aspw.client.utils.MinecraftInstance
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
@@ -8,7 +9,6 @@ import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraft.util.MathHelper
 import net.minecraft.util.Vec3
-import kotlin.math.floor
 
 object BlockUtils : MinecraftInstance() {
 
@@ -131,6 +131,41 @@ object BlockUtils : MinecraftInstance() {
             }
         }
         return false
+    }
+
+    /**
+     * Check if [axisAlignedBB] has collidable blocks using custom [collide] check
+     */
+    @JvmStatic
+    fun collideBlock2(axisAlignedBB: AxisAlignedBB, collide: (Block?) -> Boolean): Boolean {
+        return mc.theWorld.getCollisionBoxes(axisAlignedBB).stream().anyMatch { cBB ->
+            collide.invoke(getBlock(BlockPos(cBB.minX, cBB.minY, cBB.minZ)))
+        }
+    }
+
+    /**
+     * Check if [axisAlignedBB] has collidable blocks using custom [collide] check
+     */
+    @JvmStatic
+    fun collideBlockIntersects2(axisAlignedBB: AxisAlignedBB, collide: (Block?) -> Boolean): Boolean {
+        return mc.theWorld.getCollisionBoxes(axisAlignedBB).stream().anyMatch { aABB ->
+            collideBlockIntersects2(axisAlignedBB, aABB, collide)
+        }
+    }
+
+    /**
+     * Check if [axisAlignedBB] has collidable blocks using custom [collide] check
+     */
+    @JvmStatic
+    fun collideBlockIntersects2(
+        axisAlignedBB: AxisAlignedBB,
+        blockAABB: AxisAlignedBB,
+        collide: (Block?) -> Boolean
+    ): Boolean {
+        val pos = BlockPos(blockAABB.minX, blockAABB.minY, blockAABB.minZ)
+        val block = getBlock(pos) ?: return false
+        return collide.invoke(block) &&
+                block.getCollisionBoundingBox(mc.theWorld, pos, getState(pos)).intersectsWith(axisAlignedBB)
     }
 
     @JvmStatic

@@ -108,7 +108,7 @@ public class Phase extends Module {
             return;
         }
 
-        final boolean isInsideBlock = BlockUtils.collideBlockIntersects(mc.thePlayer.getEntityBoundingBox(), block -> !(block instanceof BlockAir));
+        final boolean isInsideBlock = BlockUtils.collideBlockIntersects2(mc.thePlayer.getEntityBoundingBox(), block -> !(block instanceof BlockAir));
 
         if (isInsideBlock && !modeValue.get().equalsIgnoreCase("Packetless") && !modeValue.get().equalsIgnoreCase("SmartVClip")) {
             mc.thePlayer.noClip = true;
@@ -248,10 +248,10 @@ public class Phase extends Module {
     @EventTarget
     public void onBlockBB(final BlockBBEvent event) {
         if (modeValue.get().equals("FullBlock")) return;
-        if (mc.thePlayer != null && BlockUtils.collideBlockIntersects(mc.thePlayer.getEntityBoundingBox(), block -> !(block instanceof BlockAir)) && event.getBoundingBox() != null && event.getBoundingBox().maxY > mc.thePlayer.getEntityBoundingBox().minY && !modeValue.get().equalsIgnoreCase("Packetless") && !modeValue.get().equalsIgnoreCase("SmartVClip")) {
-            final AxisAlignedBB axisAlignedBB = event.getBoundingBox();
 
-            event.setBoundingBox(new AxisAlignedBB(axisAlignedBB.maxX, mc.thePlayer.getEntityBoundingBox().minY, axisAlignedBB.maxZ, axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ));
+        final AxisAlignedBB aABB = event.getBoundingBox();
+        if (mc.thePlayer != null && aABB != null && aABB.maxY > mc.thePlayer.getEntityBoundingBox().minY && !modeValue.get().equalsIgnoreCase("Packetless") && !modeValue.get().equalsIgnoreCase("SmartVClip") && BlockUtils.collideBlockIntersects2(mc.thePlayer.getEntityBoundingBox(), aABB, block -> !(block instanceof BlockAir))) {
+            event.setBoundingBox(new AxisAlignedBB(aABB.maxX, mc.thePlayer.getEntityBoundingBox().minY, aABB.maxZ, aABB.minX, aABB.minY, aABB.minZ));
         }
     }
 

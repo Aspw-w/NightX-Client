@@ -31,7 +31,7 @@ public final class MovementUtils extends MinecraftInstance {
      * @param motionZ the motion z
      * @return the speed
      */
-    public static double getSpeed(double motionX, double motionZ) {
+    public static double getSpeed(final double motionX, final double motionZ) {
         return Math.sqrt(motionX * motionX + motionZ * motionZ);
     }
 
@@ -46,7 +46,7 @@ public final class MovementUtils extends MinecraftInstance {
         return blockUnder instanceof BlockIce || blockUnder instanceof BlockPackedIce;
     }
 
-    public static void setSpeed(double moveSpeed, float yaw, double strafe, double forward) {
+    public static void setSpeed(final double moveSpeed, float yaw, double strafe, double forward) {
         if (forward != 0.0D) {
             if (strafe > 0.0D) {
                 yaw += ((forward > 0.0D) ? -45 : 45);
@@ -65,13 +65,13 @@ public final class MovementUtils extends MinecraftInstance {
         } else if (strafe < 0.0D) {
             strafe = -1.0D;
         }
-        double mx = Math.cos(Math.toRadians((yaw + 90.0F)));
-        double mz = Math.sin(Math.toRadians((yaw + 90.0F)));
+        final double mx = Math.cos(Math.toRadians((yaw + 90.0F)));
+        final double mz = Math.sin(Math.toRadians((yaw + 90.0F)));
         mc.thePlayer.motionX = forward * moveSpeed * mx + strafe * moveSpeed * mz;
         mc.thePlayer.motionZ = forward * moveSpeed * mz - strafe * moveSpeed * mx;
     }
 
-    public static void setSpeed(double moveSpeed) {
+    public static void setSpeed(final double moveSpeed) {
         setSpeed(moveSpeed, mc.thePlayer.rotationYaw, mc.thePlayer.movementInput.moveStrafe, mc.thePlayer.movementInput.moveForward);
     }
 
@@ -139,7 +139,7 @@ public final class MovementUtils extends MinecraftInstance {
     }
 
     private static float getMoveYaw() {
-        EntityPlayerSP player = mc.thePlayer;
+        final EntityPlayerSP player = mc.thePlayer;
         float moveYaw = player.rotationYaw;
 
         if (player.moveForward != 0F && player.moveStrafing == 0F) {
@@ -164,10 +164,10 @@ public final class MovementUtils extends MinecraftInstance {
      * @param speed the speed
      */
     public static void strafe(final float speed) {
-        double shotSpeed = Math.sqrt((mc.thePlayer.motionX * mc.thePlayer.motionX) + (mc.thePlayer.motionZ * mc.thePlayer.motionZ));
-        double fixSpeed = (shotSpeed * 1);
-        double motionX = (mc.thePlayer.motionX * (0));
-        double motionZ = (mc.thePlayer.motionZ * (0));
+        final double shotSpeed = Math.sqrt((mc.thePlayer.motionX * mc.thePlayer.motionX) + (mc.thePlayer.motionZ * mc.thePlayer.motionZ));
+        final double fixSpeed = (shotSpeed * 1);
+        final double motionX = (mc.thePlayer.motionX * (0));
+        final double motionZ = (mc.thePlayer.motionZ * (0));
 
         if (!isMoving()) {
             mc.thePlayer.motionX = 0.0;
@@ -175,7 +175,7 @@ public final class MovementUtils extends MinecraftInstance {
             return;
         }
 
-        float yaw = getMoveYaw();
+        final float yaw = getMoveYaw();
         mc.thePlayer.motionX = (((-Math.sin(Math.toRadians(yaw)) * fixSpeed) + motionX));
         mc.thePlayer.motionZ = (((Math.cos(Math.toRadians(yaw)) * fixSpeed) + motionZ));
 
@@ -199,24 +199,7 @@ public final class MovementUtils extends MinecraftInstance {
      * @return the direction
      */
     public static double getDirection() {
-        float rotationYaw = RotationUtils.cameraYaw;
-
-        if (mc.thePlayer.moveForward < 0F)
-            rotationYaw += 180F;
-
-        float forward = 1F;
-        if (mc.thePlayer.moveForward < 0F)
-            forward = -0.5F;
-        else if (mc.thePlayer.moveForward > 0F)
-            forward = 0.5F;
-
-        if (mc.thePlayer.moveStrafing > 0F)
-            rotationYaw -= 90F * forward;
-
-        if (mc.thePlayer.moveStrafing < 0F)
-            rotationYaw += 90F * forward;
-
-        return Math.toRadians(rotationYaw);
+        return Math.toRadians(getRawDirection());
     }
 
     /**
@@ -274,10 +257,10 @@ public final class MovementUtils extends MinecraftInstance {
      * @param customSpeed the custom speed
      * @return the base move speed
      */
-    public static double getBaseMoveSpeed(double customSpeed) {
+    public static double getBaseMoveSpeed(final double customSpeed) {
         double baseSpeed = isOnIce() ? 0.258977700006 : customSpeed;
         if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
-            int amplifier = mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier();
+            final int amplifier = mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier();
             baseSpeed *= 1.0 + 0.2 * (amplifier + 1);
         }
         return baseSpeed;
@@ -290,9 +273,9 @@ public final class MovementUtils extends MinecraftInstance {
      * @param potionJump     the potion jump
      * @return the jump boost modifier
      */
-    public static double getJumpBoostModifier(double baseJumpHeight, boolean potionJump) {
+    public static double getJumpBoostModifier(double baseJumpHeight, final boolean potionJump) {
         if (mc.thePlayer.isPotionActive(Potion.jump) && potionJump) {
-            int amplifier = mc.thePlayer.getActivePotionEffect(Potion.jump).getAmplifier();
+            final int amplifier = mc.thePlayer.getActivePotionEffect(Potion.jump).getAmplifier();
             baseJumpHeight += ((float) (amplifier + 1) * 0.1f);
         }
 
