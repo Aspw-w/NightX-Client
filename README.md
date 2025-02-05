@@ -1,20 +1,17 @@
 # NightX Client
 # Thank you for the past three years. This client will no longer be updated.
 
-# NEW CLIENT GETTING RELEASED (25/01/19)
+# NEW CLIENT RELEASED (25/01/19)
 ## [Elite Client GitHub](https://github.com/Aspw-w/Elite-Client)
 
 Website
 > https://nattogreatapi.pages.dev/NightX
 
-Donate (Get Cape)
-> https://nightx-donations.mysellix.io
-
 Join Discord Server
-> https://discord.gg/SGBccUXFKZ
+> https://discord.gg/hBesbvw5mM
 
-Join Telegram
-> https://t.me/nightxclient
+YouTube
+> https://www.youtube.com/@Hadveen
 
 # Installation Guide
 
