@@ -1,8 +1,8 @@
 # NightX Client
 # Thank you for the past three years. This client will no longer be updated.
 
-# NEW CLIENT RELEASED (25/01/19)
-## [Elite Client GitHub](https://github.com/Aspw-w/Elite-Client)
+# Join our Discord and get the latest news
+> https://discord.gg/JN4KCBqF6m
 
 Website
 > https://nattogreatapi.pages.dev/NightX
