@@ -38,3 +38,7 @@ Loading configs is done via the command `.config onlinelist` or `.config onlinel
 
 # Wants ViaVersion?
 Install my [ViaForgePlus](https://nattogreatapi.pages.dev/ViaForgePlus) Mod
+
+
+# I want "PAIPAN"
+![KINTAMA](https://media.discordapp.net/attachments/1378289508033892422/1397699961927237804/2025-07-18_230524.png?ex=6882ad06&is=68815b86&hm=733b94745e5e7d37cadc4249ba240bfee2df2c93da38c458b71326ee2bbef01e&=&width=624&height=474)
