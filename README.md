@@ -33,6 +33,12 @@ If NightX fails to launch or provides an error:
 
 - Remove all mods except for NightX to see if it's an incompatibility issue
 
+# Ketsuanashooting
+
+Anal is Big BOMB hole with gaasu's tintin
+
+- you want to Remove tintin = MANKO UNKO TINKO TUNKO
+
 # Configs
 Loading configs is done via the command `.config onlinelist` or `.config onlineload <config_name>`
 
