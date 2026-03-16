@@ -1,11 +1,11 @@
 # NightX Client
 # Thank you for the past three years. This client will no longer be updated.
 
+# Contact me
+> https://okamabeauty.net
+
 # Website
 > https://uraguchi.okamabeauty.net/NightX/
-
-# YouTube
-> https://www.youtube.com/@Aspw-w
 
 # Installation Guide
 
