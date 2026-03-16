@@ -1,17 +1,11 @@
 # NightX Client
 # Thank you for the past three years. This client will no longer be updated.
 
-# Join our Discord and get the latest news
-> https://discord.gg/JN4KCBqF6m
+# Website
+> https://uraguchi.okamabeauty.net/NightX/
 
-Website
-> https://nattogreatapi.pages.dev/NightX
-
-Join Discord Server
-> https://discord.gg/hBesbvw5mM
-
-YouTube
-> https://www.youtube.com/@Hadveen
+# YouTube
+> https://www.youtube.com/@Aspw-w
 
 # Installation Guide
 
