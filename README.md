@@ -1,13 +1,8 @@
 # NightX Client
-# Thank you for the past three years. This client will no longer be updated.
-
-# The new Hacked Client released on https://reflexclient.xyz download now!
+# Thank you for the past four years. This client will no longer be updated
 
 # Contact me
 > https://okamabeauty.net
-
-# Website
-> https://uraguchi.okamabeauty.net/NightX/
 
 # Installation Guide
 
