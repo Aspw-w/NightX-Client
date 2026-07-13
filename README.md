@@ -4,6 +4,9 @@
 # Contact me
 > https://okamabeauty.net
 
+# New Latest Minecraft Client
+> https://github.com/Aspw-w/Krs
+
 # Installation Guide
 
 Note: We only provide support for the official Minecraft Launcher
